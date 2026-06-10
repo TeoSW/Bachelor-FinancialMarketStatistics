@@ -1,136 +1,433 @@
-# Statistical Analysis of Walmart Stock, Ethereum, and the NASDAQ Composite Index
+# 📈 Statistical Analysis of Walmart Stock, Ethereum, and the NASDAQ Composite Index
 
-**Academia de Studii Economice din București**  
-Faculty of Cybernetics, Statistics and Economic Informatics  
-Course: Statistics of Financial Markets
+🏛️ **Academia de Studii Economice din București**  
+📚 Faculty of Cybernetics, Statistics and Economic Informatics  
+💹 Course: Statistics of Financial Markets
 
-**Authors:** Nistor Matei, Ofrim Gabriel, Constantin Teodor, Dumitrescu Andrei
-
----
-
-## Overview
-
-This project performs a comparative statistical analysis of three financial assets with distinct risk profiles:
-
-- **Walmart Inc. (WMT)** — a large-cap retail stock listed on NYSE, representative of stable consumer markets
-- **Ethereum (ETH-USD)** — a major cryptocurrency known for high volatility and speculative trading
-- **NASDAQ Composite (^IXIC)** — a broad market index heavily weighted toward the technology sector
-
-The goal is to evaluate return distributions, test market efficiency and fractal structure, identify extreme values, and model conditional volatility using quantitative methods in **Python**.
-
-Data: daily adjusted closing prices from [Yahoo Finance](https://finance.yahoo.com).
+**👨‍🎓 Authors:** Nistor Matei, Ofrim Gabriel, Constantin Teodor, Dumitrescu Andrei
 
 ---
 
-## Project Structure
+## 🌟 Overview
 
-```
-1. Introduction & asset definitions
-2. Return distribution analysis
-   2.1 Descriptive statistics
-   2.2 Adjusted price evolution
-   2.3 Daily log-returns
-   2.4 Return quantiles
-   2.5 Distribution shape & skewness
-   2.6 Kolmogorov-Smirnov normality test
-3. Extreme value identification
-4. Pareto distribution fit (left tail)
-5. Weak-form Efficient Market Hypothesis (EMH) testing
-   5.1 Ljung-Box, Breusch-Godfrey, Wald-Wolfowitz tests
-   5.2 Variance Ratio test
-6. Fractal Market Hypothesis testing
-   6.1 Hurst exponent estimation
-7. GARCH(1,1) volatility modeling
+This project performs a comparative statistical analysis of three financial assets representing different risk profiles and market structures:
+
+- 🛒 **Walmart Inc. (WMT)** — a large-cap retail stock representing mature consumer markets
+- 🪙 **Ethereum (ETH-USD)** — a leading cryptocurrency characterized by high volatility and speculative trading
+- 💻 **NASDAQ Composite (^IXIC)** — a technology-focused market index tracking thousands of publicly traded companies
+
+The objective is to analyze return distributions, evaluate market efficiency, investigate long-term memory, identify extreme events, and model conditional volatility using advanced quantitative methods implemented in **Python**.
+
+📊 **Data Source:** Yahoo Finance
+
+---
+
+# 📋 Project Structure
+
+```text
+1. Introduction & Asset Definitions
+2. Return Distribution Analysis
+   ├── Descriptive Statistics
+   ├── Adjusted Price Evolution
+   ├── Daily Log-Returns
+   ├── Return Quantiles
+   ├── Distribution Shape & Skewness
+   └── Kolmogorov-Smirnov Test
+
+3. Extreme Value Identification
+
+4. Pareto Distribution Fit
+
+5. Weak-Form EMH Testing
+   ├── Ljung-Box Test
+   ├── Breusch-Godfrey Test
+   ├── Wald-Wolfowitz Test
+   └── Variance Ratio Test
+
+6. Fractal Market Hypothesis
+   └── Hurst Exponent Estimation
+
+7. GARCH(1,1) Volatility Modeling
+
 8. Conclusions
 ```
 
 ---
 
-## Methodology
+# 🔬 Methodology
 
-### Log-Returns
-Returns are computed as log-differences of closing prices:
+## 📈 Log-Returns
+
+Returns are computed using logarithmic differences:
+
+```math
+r_t = \ln(P_t) - \ln(P_{t-1})
 ```
-r_t = ln(P_t) - ln(P_{t-1})
-```
 
-### Distribution Analysis
-Descriptive statistics reveal that Ethereum has the highest volatility (σ = 0.046), followed by NASDAQ and Walmart. All three series exhibit negative skewness and excess kurtosis (leptokurtic distributions), indicating fat tails and frequent extreme values. The Kolmogorov-Smirnov test rejects normality for all three (p ≈ 0.000).
+### Why Log Returns?
 
-### Extreme Values
-Ethereum recorded the most dramatic swings: a single-day loss of **–55.07%** (2020) and a gain of **+23.47%** (2017). NASDAQ's worst single-day drop was **–13.15%**, while Walmart's was **–18.42%** (1973).
-
-### Pareto Distribution (Extreme Value Modeling)
-A Generalized Pareto distribution is fitted to the left tail (bottom 5% of returns) for each asset. KS test p-values well above 0.05 confirm a good fit in all cases — the Pareto model significantly outperforms the normal distribution in capturing tail risk:
-
-| Asset    | Shape param (b) | KS p-value |
-|----------|----------------|------------|
-| Walmart  | 4.39           | 0.6583     |
-| Ethereum | 5.02           | 0.7290     |
-| NASDAQ   | 6.82           | 0.7533     |
-
-### Weak-Form EMH Testing
-Three tests are applied to evaluate whether returns follow a random walk:
-
-- **Ljung-Box** — rejects white noise for all three assets (p < 0.05), indicating serial autocorrelation
-- **Breusch-Godfrey** — confirms correlated residuals
-- **Wald-Wolfowitz** — confirms non-randomness for ETH and NASDAQ
-- **Variance Ratio Test** — variance ratios deviate significantly from 1 under both homoskedastic and heteroskedastic assumptions, rejecting random walk behavior
-
-All tests collectively indicate that **none of the three markets satisfy weak-form efficiency**.
-
-### Fractal Market Hypothesis — Hurst Exponent
-The Hurst exponent H measures long-term memory. H > 0.5 indicates persistence (trending behavior):
-
-| Asset    | Hurst Exponent | Interpretation         |
-|----------|---------------|------------------------|
-| Walmart  | H = 0.6799    | Strong long-term memory|
-| NASDAQ   | H = 0.6292    | Moderate persistence   |
-| Ethereum | H = 0.5616    | Mild persistence       |
-
-All values exceed 0.5, supporting the **Fractal Market Hypothesis**.
-
-### GARCH(1,1) Volatility Modeling
-Conditional heteroscedasticity is modeled using GARCH(1,1):
-
-| Asset    | ω (omega)  | α (alpha) | β (beta) | α + β |
-|----------|-----------|-----------|---------|-------|
-| Walmart  | very small | 0.10      | 0.88    | 0.98  |
-| Ethereum | larger     | 0.058     | 0.93    | 0.988 |
-| NASDAQ   | ~3.24e-06  | 0.10      | 0.88    | 0.98  |
-
-High α + β values across all assets confirm **strong volatility persistence**. Ethereum shows the most reactive and elevated conditional volatility, especially around the 2017–2018 bull run and the 2020 pandemic crash.
+- ✅ Time additive
+- ✅ Common in financial econometrics
+- ✅ Better statistical properties than simple returns
 
 ---
 
-## Key Findings
+# 📊 Distribution Analysis
+
+## 📉 Descriptive Statistics
+
+Analysis of daily returns revealed significant differences in volatility across assets.
+
+### Volatility Ranking
+
+🥇 Ethereum → Highest Volatility (σ = 0.046)
+
+🥈 NASDAQ Composite
+
+🥉 Walmart
+
+### Distribution Characteristics
+
+All three return series exhibit:
+
+- ⬅️ Negative skewness
+- 📈 Excess kurtosis
+- ⚠️ Fat tails (Leptokurtic behavior)
+
+These characteristics imply a higher probability of extreme market events compared to a normal distribution.
+
+---
+
+## 🧪 Kolmogorov-Smirnov Normality Test
+
+### Results
+
+| Asset | Normal Distribution |
+|---------|---------|
+| 🛒 Walmart | ❌ Rejected |
+| 🪙 Ethereum | ❌ Rejected |
+| 💻 NASDAQ | ❌ Rejected |
+
+### Conclusion
+
+All p-values are approximately zero, strongly rejecting the assumption of normally distributed returns.
+
+---
+
+# 🚨 Extreme Value Analysis
+
+## 📉 Largest Single-Day Losses
+
+| Asset | Maximum Loss |
+|---------|---------|
+| 🪙 Ethereum | **−55.07%** |
+| 💻 NASDAQ | **−13.15%** |
+| 🛒 Walmart | **−18.42%** |
+
+---
+
+## 📈 Largest Single-Day Gains
+
+| Asset | Maximum Gain |
+|---------|---------|
+| 🪙 Ethereum | **+23.47%** |
+| 💻 NASDAQ | Significant Positive Outliers |
+| 🛒 Walmart | Moderate Positive Outliers |
+
+### Key Insight
+
+Ethereum experiences substantially larger price swings than traditional financial assets.
+
+---
+
+# 📉 Pareto Distribution & Tail Risk Modeling
+
+To better model extreme downside events, a **Generalized Pareto Distribution (GPD)** was fitted to the bottom 5% of returns.
+
+---
+
+## 📊 Results
+
+| Asset | Shape Parameter (b) | KS p-value |
+|---------|---------|---------|
+| 🛒 Walmart | 4.39 | 0.6583 |
+| 🪙 Ethereum | 5.02 | 0.7290 |
+| 💻 NASDAQ | 6.82 | 0.7533 |
+
+---
+
+## 🔍 Interpretation
+
+### ✅ Good Fit
+
+All KS test p-values exceed 0.05.
+
+This indicates:
+
+- Pareto adequately models extreme losses
+- Tail behavior differs substantially from normality
+- Extreme risk is underestimated by Gaussian assumptions
+
+---
+
+# 💹 Weak-Form Efficient Market Hypothesis (EMH)
+
+The project evaluates whether prices follow a random walk, as predicted by weak-form market efficiency.
+
+---
+
+## 🧪 Ljung-Box Test
+
+### Result
+
+❌ Rejects white noise
+
+All assets exhibit significant serial dependence.
+
+---
+
+## 🧪 Breusch-Godfrey Test
+
+### Result
+
+❌ Correlated residuals detected
+
+Returns are not fully independent over time.
+
+---
+
+## 🧪 Wald-Wolfowitz Runs Test
+
+### Result
+
+❌ Non-random patterns identified
+
+Particularly evident for:
+
+- 🪙 Ethereum
+- 💻 NASDAQ
+
+---
+
+## 🧪 Variance Ratio Test
+
+### Result
+
+❌ Random walk hypothesis rejected
+
+Variance ratios differ significantly from 1 under both:
+
+- Homoskedastic assumptions
+- Heteroskedastic assumptions
+
+---
+
+## 📌 EMH Conclusion
+
+All statistical tests consistently indicate that:
+
+> ❌ Walmart, Ethereum, and NASDAQ do not satisfy weak-form market efficiency.
+
+---
+
+# 🌀 Fractal Market Hypothesis
+
+## 📏 Hurst Exponent Analysis
+
+The Hurst exponent measures long-term memory and persistence.
+
+### Interpretation
+
+| H Value | Meaning |
+|----------|----------|
+| H < 0.5 | Mean Reversion |
+| H = 0.5 | Random Walk |
+| H > 0.5 | Persistence / Trend Following |
+
+---
+
+## 📊 Results
+
+| Asset | Hurst Exponent | Interpretation |
+|---------|---------|---------|
+| 🛒 Walmart | 0.6799 | Strong Persistence |
+| 💻 NASDAQ | 0.6292 | Moderate Persistence |
+| 🪙 Ethereum | 0.5616 | Mild Persistence |
+
+---
+
+## 🔍 Conclusion
+
+All values exceed 0.5.
+
+✅ Evidence supports the **Fractal Market Hypothesis (FMH)**.
+
+Markets display long-term memory and trending behavior.
+
+---
+
+# 📈 GARCH(1,1) Volatility Modeling
+
+To capture volatility clustering and conditional heteroskedasticity, a GARCH(1,1) model was estimated for each asset.
+
+---
+
+## 📊 Results
+
+| Asset | ω | α | β | α + β |
+|---------|---------|---------|---------|---------|
+| 🛒 Walmart | Very Small | 0.10 | 0.88 | 0.98 |
+| 🪙 Ethereum | Larger | 0.058 | 0.93 | 0.988 |
+| 💻 NASDAQ | ~3.24e−06 | 0.10 | 0.88 | 0.98 |
+
+---
+
+## 🔍 Interpretation
+
+### Volatility Persistence
+
+All assets show:
+
+```text
+α + β ≈ 1
+```
+
+This indicates:
+
+- 📈 Strong volatility clustering
+- ⏳ Long-lasting volatility shocks
+- 🔄 Persistent market uncertainty
+
+---
+
+## 🚨 Ethereum's Volatility
+
+Ethereum demonstrates:
+
+- Highest conditional volatility
+- Strongest reaction to market events
+- Pronounced volatility spikes
+
+Notable periods:
+
+- 🚀 2017–2018 Crypto Bull Market
+- 🦠 2020 Pandemic Shock
+
+---
+
+# 📊 Summary of Findings
 
 | Analysis | Walmart | Ethereum | NASDAQ |
-|---|---|---|---|
-| Normality (KS test) | Rejected | Rejected | Rejected |
-| Pareto tail fit | Good | Good | Good |
-| Weak-form EMH | Rejected | Rejected | Rejected |
-| Hurst exponent | 0.68 (persistent) | 0.56 (mild) | 0.63 (persistent) |
+|------------|------------|------------|------------|
+| Normality (KS Test) | ❌ Rejected | ❌ Rejected | ❌ Rejected |
+| Pareto Tail Fit | ✅ Good | ✅ Good | ✅ Good |
+| Weak-Form EMH | ❌ Rejected | ❌ Rejected | ❌ Rejected |
+| Hurst Exponent | 0.68 | 0.56 | 0.63 |
+| Long-Term Memory | Strong | Mild | Moderate |
 | GARCH α+β | 0.98 | 0.988 | 0.98 |
 
 ---
 
-## Tools & Technologies
+# 🛠️ Tools & Technologies
 
-- **Language:** Python
-- **Libraries:** `pandas`, `numpy`, `scipy`, `statsmodels`, `arch`, `matplotlib` (or similar)
-- **Data source:** Yahoo Finance
+### 💻 Programming Language
+
+- Python
+
+### 📚 Libraries
+
+- Pandas
+- NumPy
+- SciPy
+- Statsmodels
+- ARCH
+- Matplotlib
+
+### 📊 Data Source
+
+- Yahoo Finance
 
 ---
 
-## Data Sources
+# 📂 Financial Assets Analyzed
 
-- [Walmart Inc. (WMT)](https://finance.yahoo.com/quote/WMT)
-- [Ethereum (ETH-USD)](https://finance.yahoo.com/quote/ETH-USD)
-- [NASDAQ Composite (^IXIC)](https://finance.yahoo.com/quote/%5EIXIC)
+### 🛒 Walmart Inc.
+
+Ticker:
+
+```text
+WMT
+```
+
+Sector:
+
+- Retail
+- Consumer Staples
 
 ---
 
-## Conclusions
+### 🪙 Ethereum
 
-The analysis reveals clear differences between the three asset classes. All return series deviate significantly from normality and exhibit serial dependence, contradicting the weak-form efficient market hypothesis. The Pareto distribution provides a more realistic model of extreme downside risk than the normal distribution for all three assets. Hurst exponents above 0.5 confirm the presence of long-term memory, consistent with the Fractal Market Hypothesis. GARCH(1,1) models capture persistent volatility clustering across all assets, with Ethereum showing the highest and most reactive conditional volatility — characteristic of speculative cryptocurrency markets.
+Ticker:
+
+```text
+ETH-USD
+```
+
+Category:
+
+- Cryptocurrency
+- Digital Assets
+
+---
+
+### 💻 NASDAQ Composite
+
+Ticker:
+
+```text
+^IXIC
+```
+
+Category:
+
+- Broad Market Index
+- Technology-Oriented Equity Market
+
+---
+
+# 🎯 Key Conclusions
+
+### 📉 Non-Normal Markets
+
+All return series significantly deviate from normality and exhibit fat-tailed distributions.
+
+### 🚨 Extreme Risk Matters
+
+The Pareto distribution captures downside risk more effectively than the normal distribution.
+
+### ❌ Weak-Form EMH Rejected
+
+All tests indicate serial dependence and predictable structures within returns.
+
+### 🌀 Fractal Behavior Exists
+
+Hurst exponents above 0.5 reveal persistent long-term memory and support the Fractal Market Hypothesis.
+
+### 📈 Volatility Clustering Persists
+
+GARCH(1,1) models confirm strong volatility persistence across all assets.
+
+### 🪙 Ethereum Remains the Riskiest Asset
+
+Ethereum exhibits:
+
+- Highest volatility
+- Largest extreme returns
+- Strongest conditional volatility response
+
+making it fundamentally different from both Walmart stock and the NASDAQ Composite.
+
+---
+
+⭐ **Main Contribution:** This study provides a comparative econometric analysis of equity, cryptocurrency, and market index behavior, demonstrating the presence of fat tails, volatility clustering, long-term memory, and weak-form market inefficiency across all three financial assets.
